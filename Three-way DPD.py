@@ -15,7 +15,7 @@ data_train, data_test = train_test_split(data_PL, test_size=0.2, random_state=99
 # Extract feature data and target variables
 X_train = data_train.iloc[:, :-1].copy()
 y_train = data_train.iloc[:, -1]
-X_test = data_test.iloc[:, :-1].copy()  # 使用 copy() 创建副本以防止修改原始数据
+X_test = data_test.iloc[:, :-1].copy()  
 y_test = data_test.iloc[:, -1]
 
 
@@ -67,8 +67,8 @@ def plot_3d_pdp(model, X, varying_features,fixed_feature,fixed_value=None, grid_
     # Iterate over fixed features, filling in the mean first
     for feature in fixed_feature:
         if feature in X_test.columns:
-            fixed_value = X_test[feature].mean()  # 获取均值
-            X_grid[:, X_test.columns.get_loc(feature)] = fixed_value  # 填充均值
+            fixed_value = X_test[feature].mean()  
+            X_grid[:, X_test.columns.get_loc(feature)] = fixed_value  
         else:
             print(f"Features '{feature}' is not in X_test.columns, check spelling or formatting.")
 
