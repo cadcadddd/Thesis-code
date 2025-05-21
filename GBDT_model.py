@@ -120,7 +120,6 @@ def fitness(population_list):
 
     return fitness_results
 
-# 主循环
 population = randomGeneration(p, n, m)
 best_params = None
 
@@ -172,7 +171,6 @@ if best_params:
         random_state = 999
     )
 
-    # 拟合最终模型
     final_model.fit(X_train, y_train)
 
 else:
