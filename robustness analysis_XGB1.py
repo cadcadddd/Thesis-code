@@ -31,32 +31,45 @@ X_train = data_train.iloc[:, :-1]
 y_train = data_train.iloc[:, -1]
 y_test = data_test.iloc[:, -1]
 
+
 # Noise parameters (set appropriate mean and standard deviation based on data characteristics)
 noise_params1 = {
-    'l_f/d_f': {'mean': 0, 'std_dev': 0.085},
-    'l_f': {'mean': 0, 'std_dev': 0.05824},
-    'V_f': {'mean': 0, 'std_dev': 0.00112},
-    "f_c'": {'mean': 0, 'std_dev': 0.073},
-    'd': {'mean': 0, 'std_dev': 0.0233},
-    'c/d': {'mean': 0, 'std_dev': 0.0075},
-    'l/d': {'mean': 0, 'std_dev': 0.0085}}
+    'l_f/d_f': {'mean': 0, 'std_dev': 0.17},  
+    'l_f': {'mean': 0, 'std_dev': 0.1},  
+    'V_f': {'mean': 0, 'std_dev':0.002267},  
+    "f_c'": {'mean': 0, 'std_dev': 0.146}, 
+    'd': {'mean': 0, 'std_dev': 0.046667},
+    'c/d': {'mean': 0, 'std_dev': 0.015},  
+    'l/d': {'mean': 0, 'std_dev': 0.017}}  
 
 noise_params5 = {
-    'l_f/d_f': {'mean': 0, 'std_dev': 0.425},
-    'l_f': {'mean': 0, 'std_dev': 0.2912},
-    'V_f': {'mean': 0, 'std_dev': 0.0056},
-    "f_c'": {'mean': 0, 'std_dev': 0.365},
-    'd': {'mean': 0, 'std_dev': 0.1165},
-    'c/d': {'mean': 0, 'std_dev': 0.0375},
-    'l/d': {'mean': 0, 'std_dev': 0.0425}}
+    'l_f/d_f': {'mean': 0, 'std_dev': 0.17*5},
+    'l_f': {'mean': 0, 'std_dev': 0.1*5},  
+    'V_f': {'mean': 0, 'std_dev':0.002267*5},  
+    "f_c'": {'mean': 0, 'std_dev': 0.146*5},  
+    'd': {'mean': 0, 'std_dev': 0.046667*5}, 
+    'c/d': {'mean': 0, 'std_dev': 0.015*5},  
+    'l/d': {'mean': 0, 'std_dev': 0.017*5}}  
+
+noise_params15 = {
+    'l_f/d_f': {'mean': 0, 'std_dev': 0.17*15},  
+    'l_f': {'mean': 0, 'std_dev': 0.1*15}, 
+    'V_f': {'mean': 0, 'std_dev':0.002267*15},  
+    "f_c'": {'mean': 0, 'std_dev': 0.146*15},  
+    'd': {'mean': 0, 'std_dev': 0.046667*15},  
+    'c/d': {'mean': 0, 'std_dev': 0.015*15}, 
+    'l/d': {'mean': 0, 'std_dev': 0.017*15}}  
+
+
 noise_params10 = {
-    'l_f/d_f': {'mean': 0, 'std_dev': 0.425*2},
-    'l_f': {'mean': 0, 'std_dev': 0.05824*2},
-    'V_f': {'mean': 0, 'std_dev': 0.0056*2},
-    "f_c'": {'mean': 0, 'std_dev': 0.365*2},
-    'd': {'mean': 0, 'std_dev': 0.1165*2},
-    'c/d': {'mean': 0, 'std_dev': 0.0375*2},
-    'l/d': {'mean': 0, 'std_dev': 0.0425*2}}
+    'l_f/d_f': {'mean': 0, 'std_dev': 0.17*10},  
+    'l_f': {'mean': 0, 'std_dev': 0.1*10},  
+    'V_f': {'mean': 0, 'std_dev':0.002267*10}, 
+    "f_c'": {'mean': 0, 'std_dev': 0.146*10},  
+    'd': {'mean': 0, 'std_dev': 0.046667*10},  
+    'c/d': {'mean': 0, 'std_dev': 0.015*10},  
+    'l/d': {'mean': 0, 'std_dev': 0.017*10}}  
+
 
 
 
@@ -66,8 +79,8 @@ for i in range(n_iterations):
     X_test = data_test.iloc[:, :-1].copy()
     # Add noise to input features only
     for feature in X_test.columns:
-        mean = noise_params1[feature]['mean']#Selection of noise distribution
-        std_dev = noise_params1[feature]['std_dev']
+        mean = noise_params1[feature]['mean']        #Selection of noise distribution
+        std_dev = noise_params1[feature]['std_dev']        #Selection of noise distribution
         noise = np.random.normal(mean, std_dev, X_test[feature].shape)
 
         # Add noise only to elements that are not 0
@@ -75,8 +88,8 @@ for i in range(n_iterations):
         X_test.loc[X_test[feature] != 0, feature] += noise[X_test[feature] != 0]
 
     # Model training
-    # Interchangeable models
-    final_model = xgb.XGBRegressor(
+    # Interchangeable models                #Selection of ML models
+    XGBoost_model = xgb.XGBRegressor(
         max_depth=5,
         colsample_bytree=0.875,
         colsample_bylevel=0.4,
@@ -86,7 +99,16 @@ for i in range(n_iterations):
         subsample=0.5,
         random_state=999
     )
-
+    GBDT_model = GradientBoostingRegressor(
+        learning_rate=0.475,
+        n_estimators=300,
+        max_depth=3,
+        subsample=0.918,
+        min_samples_split=9,
+        min_samples_leaf=1,
+        max_features=0.367,
+        random_state=999
+    )
     # Fitting the final model
     final_model.fit(X_train, y_train)
 
